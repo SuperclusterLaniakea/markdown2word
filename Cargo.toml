@@ -1,0 +1,30 @@
+[package]
+name = "md2word"
+version = "0.1.0"
+edition = "2024"
+description = "Markdown -> Word (.docx) 批量转换器，保留文本格式、字号层级、表格、公式与图片位置"
+
+[[bin]]
+name = "md2word"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+eframe = "0.37"
+egui = "0.37"
+imagesize = "0.13"
+knit-md-docx-rs = "0.4.20"
+pulldown-cmark = { version = "0.13", default-features = false }
+rfd = "0.17"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+walkdir = "2"
+
+[profile.release]
+opt-level = 3
+# 不用 lto + codegen-units=1：eframe 依赖树极大，串行优化会让链接时间
+# 暴涨到几十分钟，收益却很小。保持默认并行 codegen 即可。
+lto = false
+codegen-units = 16
+panic = "abort"
+strip = true
